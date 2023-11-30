@@ -1,18 +1,19 @@
 library(tidyverse)
 
 # Summary of Toxics Release Inventory (TRI)
-df_2021 <- read.csv("2021_us.csv") 
+# Assuming you have a file called "2021_us.csv" in your working directory
+df_2021 <- read.csv("2021_us.csv")
 glimpse(df_2021)
 names(df_2021)
 
 # Fix column names
 colnames(df_2021) <- gsub("^X\\d+\\.+", "", colnames(df_2021))
 
-
+# Find the frequency of each facility in the data
 facility_count <- df_2021 %>% 
   count(FACILITY.NAME, sort = T)
 
-
+# Shortened for brevity
 facility_count_short <- facility_count %>% 
   filter(n >= 50)
 
@@ -59,12 +60,13 @@ top_3_plot <- top_3_df %>%
   coord_flip()
 top_3_plot
 
-# Determine most common type of release
+# Determine most common type of release (top 10, top 25, top 50)
 release_types <- sort(table(df_2021$CHEMICAL), decreasing = TRUE)
 top_10_chems <- as.data.frame(release_types[1:10])
 top_25_chems <- as.data.frame(release_types[1:25])
 top_50_chems <- as.data.frame(release_types[1:50])
 
+# Plot top 25 chemicals released
 top_25_chems %>% 
   ggplot(aes(x=reorder(Var1,Freq), y=Freq, fill = "#53868b"))+
   geom_bar(stat='identity')+
